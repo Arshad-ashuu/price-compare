@@ -16,17 +16,17 @@ export async function scrapeShoppersStore(searchQuery) {
     });
 
     // Wait for product containers to load
-    await page.waitForSelector('.bg-transparent', { timeout: 30000 });
+    await page.waitForSelector('.grid', { timeout: 30000 });
 
     // Scrape product details
     const products = await page.evaluate(() => {
-      const items = document.querySelectorAll('.bg-transparent');
+      const items = document.querySelectorAll('.grid');
       console.log(items.length)
       return Array.from(items, item => {
         const titleElement = item.querySelector('.line-clamp-2');
         const priceElement = item.querySelector('.mt-2 .text-xs.text-black');
         const imageElement = item.querySelector('img[alt="product card"]');
-        const linkElement = item.querySelector('.product-name a');
+        const linkElement = item.querySelector('a');
 
         return {
           title: titleElement?.textContent?.trim() || '',

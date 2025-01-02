@@ -9,18 +9,18 @@ export async function scrapeAmazon(searchQuery) {
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
     await page.setExtraHTTPHeaders({ 'accept-language': 'en-US,en;q=0.9' });
 
-    // Navigate to the Amazon search page
+    // Navigate to the Amazon search page with extended timeout and 'networkidle2'
     await page.goto(`https://www.amazon.in/s?k=${encodeURIComponent(searchQuery)}`, {
       timeout: 60000,
-      waitUntil: 'domcontentloaded',
+      waitUntil: 'networkidle2',  // Wait until network activity stops
     });
 
     // Wait for product containers to load
-    await page.waitForSelector('.s-result-item .s-asin', { timeout: 30000 });
+    await page.waitForSelector('.s-main-slot .s-result-list .s-search-results .sg-row', { timeout: 60000 });  // Increased timeout
 
     // Scrape product details
     const products = await page.evaluate(() => {
-      const items = document.querySelectorAll('.s-result-item .s-asin');
+      const items = document.querySelectorAll('.s-main-slot .s-result-list .s-search-results .sg-row');
       return Array.from(items, item => {
         const titleElement = item.querySelector('h2 span');
         const priceElement = item.querySelector('.a-price-whole');

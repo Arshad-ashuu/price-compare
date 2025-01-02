@@ -15,4 +15,6 @@ export interface StoreInfo {
   name: Store;
   displayName: string;
   logo: string;
+  link: string;
+
 }

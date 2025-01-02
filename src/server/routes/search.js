@@ -1,6 +1,6 @@
 import express from 'express';
 import { scrapeAmazon } from '../scrapers/amazon.js';
-import { scrapeShoppersStore, shoppersStore } from '../scrapers/shoppersStore.js';
+import { scrapeShoppersStore } from '../scrapers/shoppersStore.js';
 
 import { scrapeSouledStore } from '../scrapers/souledStore.js';
 import { sanitizeProducts } from '../utils/productUtils.js';
@@ -14,13 +14,13 @@ router.get('/search', async (req, res) => {
   }
 
   try {
-    const [amazonProducts, souledStoreProducts, scrapeShoppersStore] = await Promise.all([
+    const [amazonProducts, souledStoreProducts, shoppersStoreProducts] = await Promise.all([
       scrapeAmazon(query),
       scrapeShoppersStore(query),
       scrapeSouledStore(query)
     ]);
 
-    const allProducts = sanitizeProducts([...amazonProducts, ...souledStoreProducts]);
+    const allProducts = sanitizeProducts([...amazonProducts, ...souledStoreProducts, ...shoppersStoreProducts]);
     res.json(allProducts);
   } catch (error) {
     console.error('Error during scraping:', error);
